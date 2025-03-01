@@ -19,7 +19,7 @@ fun SuccessScreen(
 ) {
     Column(
         modifier = modifier
-            .padding(24.dp)
+            .padding(top = 150.dp, end = 24.dp, start = 24.dp, bottom = 24.dp)
             .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -40,7 +40,6 @@ fun SuccessScreen(
         ) {
             Text(text = "Add More Product")
         }
-        Spacer(modifier = modifier.height(12.dp))
         Spacer(modifier = modifier.height(12.dp))
         Button(
             modifier = modifier

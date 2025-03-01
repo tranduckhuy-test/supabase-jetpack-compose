@@ -5,10 +5,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.CreateProductUseCase
+import me.tranduchuy.supabasejetpackcompose.domain.usecase.DeleteProductUseCase
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.SignInUseCase
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.SignInWithGoogleUseCase
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.SignUpUseCase
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.impl.CreateProductUseCaseImpl
+import me.tranduchuy.supabasejetpackcompose.domain.usecase.impl.DeleteProductUseCaseImpl
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.impl.SignInUseCaseImpl
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.impl.SignInWithGoogleUseCaseImpl
 import me.tranduchuy.supabasejetpackcompose.domain.usecase.impl.SignUpUseCaseImpl
@@ -26,8 +28,8 @@ abstract class UseCaseModule {
 //    @Binds
 //    abstract fun bindGetProductDetailsUseCase(impl: GetProductDetailsUseCaseImpl): GetProductDetailsUseCase
 //
-//    @Binds
-//    abstract fun bindDeleteProductUseCase(impl: DeleteProductUseCaseImpl): DeleteProductUseCase
+    @Binds
+    abstract fun bindDeleteProductUseCase(impl: DeleteProductUseCaseImpl): DeleteProductUseCase
 //
 //    @Binds
 //    abstract fun bindUpdateProductUseCase(impl: UpdateProductUseCaseImpl): UpdateProductUseCase

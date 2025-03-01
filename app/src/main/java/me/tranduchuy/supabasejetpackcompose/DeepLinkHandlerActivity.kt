@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.handleDeeplinks
+import me.tranduchuy.supabasejetpackcompose.presentation.feature.signin.SignInScreen
 import me.tranduchuy.supabasejetpackcompose.presentation.feature.signin.SignInSuccessScreen
 import me.tranduchuy.supabasejetpackcompose.ui.theme.SupabaseJetpackComposeTheme
 import javax.inject.Inject
@@ -29,37 +30,52 @@ class DeepLinkHandlerActivity : ComponentActivity() {
     lateinit var supabaseClient: SupabaseClient
 
     private lateinit var callback: (String, String) -> Unit
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         supabaseClient.handleDeeplinks(intent = intent,
             onSessionSuccess = { userSession ->
                 Log.d("LOGIN", "Log in successfully with user info: ${userSession.user}")
-                userSession.user?.apply {
-                    callback(email ?: "", createdAt.toString())
+
+                if (userSession.user != null) {
+                    userSession.user?.apply {
+                        callback(email ?: "", createdAt.toString())
+                    }
+                } else {
+                    Log.d("LOGIN", "User session is null, login failed or canceled")
                 }
-            })
+            }
+        )
+
         setContent {
             val navController = rememberNavController()
             val emailState = remember { mutableStateOf("") }
             val createdAtState = remember { mutableStateOf("") }
+
             LaunchedEffect(Unit) {
                 callback = { email, created ->
                     emailState.value = email
                     createdAtState.value = created
                 }
             }
+
             SupabaseJetpackComposeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SignInSuccessScreen(
-                        modifier = Modifier.padding(20.dp),
-                        navController = navController,
-                        email = emailState.value,
-                        createdAt = createdAtState.value,
-                        onClick = { navigateToMainApp() }
-                    )
+                    if (emailState.value.isNotEmpty()) {
+                        SignInSuccessScreen(
+                            modifier = Modifier.padding(20.dp),
+                            navController = navController,
+                            email = emailState.value,
+                            createdAt = createdAtState.value,
+                            onClick = { navigateToMainApp() }
+                        )
+                    } else {
+                        SignInScreen(modifier = Modifier, navController = navController)
+                    }
                 }
             }
         }

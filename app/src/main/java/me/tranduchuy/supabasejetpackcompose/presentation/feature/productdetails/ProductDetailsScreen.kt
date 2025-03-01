@@ -45,8 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import me.tranduchuy.supabasejetpackcompose.R
+import me.tranduchuy.supabasejetpackcompose.presentation.navigation.ProductListDestination
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -89,7 +91,7 @@ fun ProductDetailsScreen(
     ) { innerPadding ->
         val name = viewModel.name.collectAsState(initial = "")
         val price = viewModel.price.collectAsState(initial = 0.0)
-        val imageUrl = Uri.parse(viewModel.imageUrl.collectAsState(initial = null).value)
+        val imageUrl = Uri.parse(viewModel.imageUrl.collectAsState(initial = "").value)
         val contentResolver = LocalContext.current.contentResolver
 
         Column(
@@ -108,8 +110,16 @@ fun ProductDetailsScreen(
                     }
                 }
 
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error_image)
+                    .build()
+            )
+
             Image(
-                painter = rememberAsyncImagePainter(imageUrl),
+                painter = painter,
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
                 modifier = Modifier
@@ -173,14 +183,15 @@ fun ProductDetailsScreen(
                             duration = SnackbarDuration.Short
                         )
                     }
-                }
+                },
             ) {
                 Text(text = "Save changes")
             }
             Spacer(modifier = modifier.height(12.dp))
             OutlinedButton(
                 modifier = modifier.fillMaxWidth(),
-                onClick = { navController.navigateUp() }
+                onClick = { navController.popBackStack(ProductListDestination.route, false) }
+
             ) {
                 Text(text = "Cancel")
             }

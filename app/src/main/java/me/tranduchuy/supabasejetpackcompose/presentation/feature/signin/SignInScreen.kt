@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.tranduchuy.supabasejetpackcompose.presentation.navigation.SignUpDestination
 
@@ -39,9 +41,9 @@ fun SignInScreen(
     navController: NavController,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
@@ -123,18 +125,26 @@ fun SignInScreen(
                 Text("Sign in with Google")
             }
 
+            // LaunchedEffect chỉ phát thông báo khi có thông báo không trống
+            LaunchedEffect(viewModel.message) {
+                viewModel.message.collectLatest { msg ->
+                    if (msg.isNotEmpty()) {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = msg,
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                }
+            }
+
             Button(modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp),
                 onClick = {
                     localSoftwareKeyboardController?.hide()
                     viewModel.onSignIn()
-                    coroutineScope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = "Sign in successfully !",
-                            duration = SnackbarDuration.Long
-                        )
-                    }
                 }) {
                 Text("Sign in")
             }

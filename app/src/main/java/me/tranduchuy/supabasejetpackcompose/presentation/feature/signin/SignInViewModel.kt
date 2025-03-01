@@ -1,5 +1,6 @@
 package me.tranduchuy.supabasejetpackcompose.presentation.feature.signin
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,12 +36,26 @@ class SignInViewModel @Inject constructor(
 
     fun onGoogleSignIn() {
         viewModelScope.launch {
-            signInWithGoogleUseCase.execute(SignInWithGoogleUseCase.Input())
+            _message.emit("")
+            Log.d("SignInViewModel", "Starting Google sign-in")
+
+            val result = signInWithGoogleUseCase.execute(SignInWithGoogleUseCase.Input())
+
+            Log.d("SignInViewModel", "Google sign-in success: ${result.success}")
+
+            if (result.success) {
+                _message.emit("Sign in with Google successful!")
+            } else {
+                _message.emit("Google sign-in failed or canceled")
+            }
         }
     }
 
+
+
     fun onSignIn() {
         viewModelScope.launch {
+            message.emit("")
             val result = signInUseCase.execute(
                 SignInUseCase.Input(
                     email = _email.value,

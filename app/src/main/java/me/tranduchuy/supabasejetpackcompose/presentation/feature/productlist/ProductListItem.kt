@@ -16,11 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import me.tranduchuy.supabasejetpackcompose.R
 import me.tranduchuy.supabasejetpackcompose.domain.model.Product
+import me.tranduchuy.supabasejetpackcompose.ui.theme.SupabaseJetpackComposeTheme
 
 @Composable
 fun ProductListItem(
@@ -67,5 +69,14 @@ fun ProductListItem(
                 color = MaterialTheme.colorScheme.primary
             )
         }
+    }
+}
+
+@Preview(name = "ProductListItem Compose")
+@Composable
+fun ProductListPreview() {
+    SupabaseJetpackComposeTheme {
+
+        ProductListItem(product = Product("123", "Hello", 123.3, "123"), onClick = {})
     }
 }

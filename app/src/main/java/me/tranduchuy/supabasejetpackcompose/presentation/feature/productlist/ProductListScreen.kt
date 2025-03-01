@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,7 +38,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import me.tranduchuy.supabasejetpackcompose.R
 import me.tranduchuy.supabasejetpackcompose.presentation.navigation.AddProductDestination
 import me.tranduchuy.supabasejetpackcompose.presentation.navigation.ProductDetailsDestination
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen(
@@ -47,6 +47,11 @@ fun ProductListScreen(
 ) {
     val isLoading by viewModel.isLoading.collectAsState(initial = false)
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    LaunchedEffect(Unit) {
+        viewModel.getProducts()
+    }
+
     SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.getProducts() }) {
         Scaffold(
             topBar = {
@@ -150,3 +155,4 @@ private fun AddProductButton(
         )
     }
 }
+

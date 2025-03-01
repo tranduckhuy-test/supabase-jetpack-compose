@@ -36,6 +36,7 @@ import me.tranduchuy.supabasejetpackcompose.domain.usecase.CreateProductUseCase
 import me.tranduchuy.supabasejetpackcompose.presentation.feature.addproduct.composables.FailScreen
 import me.tranduchuy.supabasejetpackcompose.presentation.feature.addproduct.composables.LoadingScreen
 import me.tranduchuy.supabasejetpackcompose.presentation.feature.addproduct.composables.SuccessScreen
+import me.tranduchuy.supabasejetpackcompose.presentation.navigation.ProductListDestination
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,8 +154,9 @@ fun AddProductScreen(
                             viewModel.onAddMoreProductSelected()
                         },
                         onNavigateBack = {
-                            navController.navigateUp()
-                        })
+                            navController.popBackStack(ProductListDestination.route, false)
+                        }
+                    )
                 }
                 is CreateProductUseCase.Output.Failure -> {
                     val reasonMessage = rememberSaveable {

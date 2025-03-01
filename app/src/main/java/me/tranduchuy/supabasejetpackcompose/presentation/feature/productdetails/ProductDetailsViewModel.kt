@@ -41,10 +41,14 @@ class ProductDetailsViewModel @Inject constructor(
 
     private fun getProduct(productId: String) {
         viewModelScope.launch {
-            val result = productRepository.getProduct(productId).asDomainModel()
-            _product.emit(result)
-            _name.emit(result.name)
-            _price.emit(result.price)
+            val result = productRepository.getProduct(productId)
+
+            if (result != null) {
+                _product.value = result.asDomainModel()
+                _name.value = result.name
+                _price.value = result.price
+                _imageUrl.value = result.image ?: ""
+            }
         }
     }
 

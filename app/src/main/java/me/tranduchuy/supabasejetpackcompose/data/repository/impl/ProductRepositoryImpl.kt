@@ -1,5 +1,6 @@
 package me.tranduchuy.supabasejetpackcompose.data.repository.impl
 
+import android.util.Log
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import kotlinx.coroutines.Dispatchers
@@ -38,14 +39,13 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-
-    override suspend fun getProduct(id: String): ProductDto {
+    override suspend fun getProduct(id: String): ProductDto? {
         return withContext(Dispatchers.IO) {
             postgrest.from("products").select {
                 filter {
                     eq("id", id)
                 }
-            }.decodeSingle<ProductDto>()
+            }.decodeSingleOrNull<ProductDto>()
         }
     }
 
@@ -76,6 +76,8 @@ class ProductRepositoryImpl @Inject constructor(
                         upsert = true
                     }
 
+                Log.i("ImageUrl", imageUrl.path)
+
                 postgrest.from("products").update({
                     set("name", name)
                     set("price", price)
@@ -101,5 +103,5 @@ class ProductRepositoryImpl @Inject constructor(
     // Because I named the bucket as "Product Image" so when it turns to an url, it is "%20"
     // For better approach, you should create your bucket name without space symbol
     private fun buildImageUrl(imageFileName: String) =
-        "${BuildConfig.SUPABASE_URL}/storage/v1/object/public/${imageFileName}".replace(" ", "%20")
+        "${BuildConfig.SUPABASE_URL}/storage/v1/object/public/Product%20Image/${imageFileName}".replace(" ", "%20")
 }
